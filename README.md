@@ -8,7 +8,7 @@ The output is a collection of all the star ships and the total amount of stops r
 
 Assumption1 - about cargo
 We cannot know if the ships have a full cargo before they begin to travel that distance, because we do not have an attribute for cargo level. 
-One solution would be - at the end - to add one additional stop to every ship so we can cover the worst case scenario (aka cargo empty)
+One solution would be - at the end - to add one additional stop to every ship so we can cover the worst case scenario (aka cargo empty).
 For not over-complicating the problem, we will assume that at the starting point they are full
 
 Assumption2 - about passengers
