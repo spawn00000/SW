@@ -22,5 +22,6 @@ We also assume that the year, month, day of the starting point for the ships it 
 So we will have to make small approximations like: 1 year=8760hours; 1 month=730hours (1 Earth week always has 168 hours and 1 Earth day has 24 hours - no approximation here). It is not so relevant if it a leap year or if the month is August or February.
 
 Details about the application: Type = console application; IDE used = Microsoft Visual Studio 2010; DLLs used: Newtonsoft.Json
+
 Instructions for usage: Run SW.exe from debug folder. Write an input for the distance and press ENTER.
 
