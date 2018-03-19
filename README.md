@@ -23,5 +23,5 @@ So we will have to make small approximations like: 1 year=8760hours; 1 month=730
 
 Details about the application: Type = console application; IDE used = Microsoft Visual Studio 2010; DLLs used: Newtonsoft.Json
 
-Instructions for usage: Run SW.exe from debug folder. Write an input for the distance and press ENTER.
+Instructions for usage: Download SW.exe and Newtonsoft.Json.dll from Debug folder. Run SW.exe from debug folder. Write an input for the distance and press ENTER.
 

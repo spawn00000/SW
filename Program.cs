@@ -12,35 +12,53 @@ namespace SW
 {
     class Program
     {
+        //inits from our approximations (check README file)
+        public const int hoursPerYear = 8760;
+        public const int hoursPerMonth = 730;
+        public const int hoursPerWeek = 168;
+        public const int hoursPerDay = 24;
+
+
         static void Main(string[] args)
         {
-            Console.WindowHeight = 60; //increase height of the console - to view all the starships
+            Console.WindowHeight = 60; //increase height of the console - to view all the starships without scroll
             Program p = new Program();
 
 
             Console.WriteLine("Please input the distance in MGLT....");
-            //test input!!
+            //test input!! check for positive number >0
             string inputDistance = Console.ReadLine();
             Console.WriteLine("Star Wars starships are coming. They had to make several stops. Please wait");
-            Console.WriteLine();
+            Console.WriteLine();                        
 
-            //string test = p.getResponse("https://swapi.co/api/starships");
-
-
-            //inits
-            const int hoursPerYear = 8760;
-            const int hoursPerMonth = 730;
-            const int hoursPerWeek = 168;
-            const int hoursPerDay = 24;
-
-
-            //algorithm
+            
             List<starship> starships = new List<starship>();
-
             string urlPiece = "starships";
             string url = "https://swapi.co/api/" + urlPiece;
+
+            //get information about starships
             p.getAllStarships(ref starships, url);
 
+            //algorithm
+            p.findStopsNumber(ref starships, inputDistance);
+            
+
+
+            //printing the results in the format required
+            for (int i = 0; i < starships.Count; i++)
+            {
+                starship SS = starships[i];
+                Console.WriteLine(SS.name + ": " + SS.noStopsPerDistance);
+            }
+
+            //keep console open.
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadKey();
+        }
+
+
+        public void findStopsNumber(ref List<starship> starships, string inputDistance)
+        {
             for (int i = 0; i < starships.Count; i++)
             {
                 starship SS = starships[i];
@@ -73,25 +91,32 @@ namespace SW
                     }
                     else
                     {
-                        SS.noStopsPerDistance = (Convert.ToInt32(SS.distance) / (Convert.ToInt32(SS.MGLT) * Convert.ToInt32(SS.consumables_hours))).ToString();
+
+                        if (SS.MGLT.Equals("0"))
+                        {
+                            //protect against divide by 0
+                            SS.noStopsPerDistance = "ship can teleport (has a blink drive) or cannot move from starting point";
+                        }
+                        else if (SS.consumables_hours.Equals("0"))
+                        {
+                            //protect against divide by 0
+                            SS.noStopsPerDistance = "ship does not need living organisms and fuel to travel";
+                        }
+                        else
+                        {
+                            //truncate for getting the integer part of the double result 
+                            SS.noStopsPerDistance = Math.Truncate(Convert.ToDouble(SS.distance) / (Convert.ToDouble(SS.MGLT) * Convert.ToDouble(SS.consumables_hours))).ToString();
+                        }
                     }
                 }
 
-
-                Console.WriteLine(SS.name + ": " + SS.noStopsPerDistance);
             }
-
-
-            
-
-            //keep console open.
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
         }
 
 
         public string getResponse(string url)
         {
+            //to do tests
             WebRequest req = WebRequest.Create(url);
 
             Stream str = req.GetResponse().GetResponseStream();
