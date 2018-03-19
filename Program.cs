@@ -24,25 +24,29 @@ namespace SW
             Console.WindowHeight = 60; //increase height of the console - to view all the starships without scroll
             Program p = new Program();
 
-
+            //get input distance in Megalights
             Console.WriteLine("Please input the distance in MGLT....");
-            //test input!! check for positive number >0
-            string inputDistance = Console.ReadLine();
+            string inputDistance = "";
+            p.readInput(ref inputDistance);
             Console.WriteLine("Star Wars starships are coming. They had to make several stops. Please wait");
-            Console.WriteLine();                        
+            Console.WriteLine();
 
-            
+            //get information about starships
             List<starship> starships = new List<starship>();
             string urlPiece = "starships";
             string url = "https://swapi.co/api/" + urlPiece;
-
-            //get information about starships
             p.getAllStarships(ref starships, url);
+            if (starships.Count == 0)
+            {
+                //check if any errors in getting the information
+                Console.WriteLine("YODA: Star Wars databases down are. Try later. May the Force be with you.");
+                Console.ReadKey();
+                return;
+            }            
+           
 
-            //algorithm
+            //algorithm for finding number of stops
             p.findStopsNumber(ref starships, inputDistance);
-            
-
 
             //printing the results in the format required
             for (int i = 0; i < starships.Count; i++)
@@ -52,10 +56,35 @@ namespace SW
             }
 
             //keep console open.
-            Console.WriteLine("Press any key to exit.");
+            Console.WriteLine("Press any key to exit. May the Force be with you.");
             Console.ReadKey();
         }
 
+
+        public void readInput(ref string inputDistance)
+        {
+            inputDistance = Console.ReadLine();
+            double result = 0;
+            //test if is a number
+            bool testInput = double.TryParse(inputDistance, out result);
+
+            if (testInput)
+            {
+                //test if is positive number
+                if (result <= 0)
+                {
+                    Console.WriteLine("Star Wars starships cannot go back in time. Please input a positive number.");
+                    readInput(ref inputDistance);
+                }
+            }
+            else
+            {
+                //it is not a number
+                Console.WriteLine("This is not a number in the Star Wars universe. Please input a number");
+                readInput(ref inputDistance);
+            }
+
+        }
 
         public void findStopsNumber(ref List<starship> starships, string inputDistance)
         {
@@ -116,15 +145,22 @@ namespace SW
 
         public string getResponse(string url)
         {
-            //to do tests
-            WebRequest req = WebRequest.Create(url);
+            string json = "error"; // error - site is down
+            // catch error if site is down           
+            try
+            {
+                WebRequest req = WebRequest.Create(url);
+                Stream str = req.GetResponse().GetResponseStream();
 
-            Stream str = req.GetResponse().GetResponseStream();
-
-            //read data
-            StreamReader r = new StreamReader(str);
-            string json = r.ReadToEnd();
-            r.Dispose();
+                //read data
+                StreamReader r = new StreamReader(str);
+                json = r.ReadToEnd();
+                r.Dispose(); //clear resources
+            }
+            catch
+            {
+                //error
+            }
 
             return json;
         }
@@ -133,6 +169,13 @@ namespace SW
         public void getAllStarships(ref List<starship> starships, string url)
         {
             string json = getResponse(url);
+
+            if (json.Equals("error"))
+            {
+                starships = new List<starship>();
+                return;
+            }
+
             //parse json
             dictionary<starship> query = JsonConvert.DeserializeObject<dictionary<starship>>(json);
 
