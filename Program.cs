@@ -56,6 +56,7 @@ namespace SW
             }
 
             //keep console open.
+            Console.WriteLine();
             Console.WriteLine("Press any key to exit. May the Force be with you.");
             Console.ReadKey();
         }
@@ -74,6 +75,13 @@ namespace SW
                 if (result <= 0)
                 {
                     Console.WriteLine("Star Wars starships cannot go back in time. Please input a positive number.");
+                    readInput(ref inputDistance);
+                }
+
+                //test if is higher than maxvalue (just in case)
+                if (result > double.MaxValue)
+                {
+                    Console.WriteLine("Star Wars starships cannot go that far. Please input a smaller number.");
                     readInput(ref inputDistance);
                 }
             }
